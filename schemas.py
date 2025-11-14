@@ -12,7 +12,8 @@ Model name is converted to lowercase for the collection name:
 """
 
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, List, Literal
+from datetime import datetime
 
 # Example schemas (replace with your own):
 
@@ -37,6 +38,23 @@ class Product(BaseModel):
     price: float = Field(..., ge=0, description="Price in dollars")
     category: str = Field(..., description="Product category")
     in_stock: bool = Field(True, description="Whether product is in stock")
+
+# AI chat related schemas
+
+Role = Literal["user", "assistant", "system"]
+
+class ChatMessage(BaseModel):
+    role: Role
+    content: str
+    model: Optional[str] = None
+    tone: Optional[Literal["friendly", "formal", "technical"]] = None
+    language: Optional[str] = None
+    created_at: Optional[datetime] = None
+
+class Conversation(BaseModel):
+    title: str = Field(..., description="A short title for the conversation")
+    messages: List[ChatMessage] = Field(default_factory=list)
+    user_id: Optional[str] = None
 
 # Add your own schemas here:
 # --------------------------------------------------
